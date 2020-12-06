@@ -1,7 +1,9 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
 
 public class PlayerHandler implements Runnable {
 
@@ -21,7 +23,7 @@ public class PlayerHandler implements Runnable {
 
     }
 
-    private int getClientId(){
+    private int getClientId() {
         return clientId;
     }
 
@@ -46,7 +48,7 @@ public class PlayerHandler implements Runnable {
                 System.out.println("Client " + clientId + " command:" + clientCommand);
                 if (clientCommand.startsWith("move")) {
                     String enteredWord = clientCommand.substring(5);
-                    checkWord(enteredWord,clientId);
+                    checkWord(enteredWord, clientId);
 
                 } else if (clientCommand.equalsIgnoreCase("words")) {
                     out.println(gameEngine.getWordList());
@@ -65,16 +67,16 @@ public class PlayerHandler implements Runnable {
         }
     }
 
-    private void outToClient(String s, int clientId){
-        for (PlayerHandler client: playerList){
-            if (client.getClientId() == clientId){
+    private void outToClient(String s, int clientId) {
+        for (PlayerHandler client : playerList) {
+            if (client.getClientId() == clientId) {
                 client.out.println(s);
             }
         }
     }
 
-    private void checkWord(String enteredWord,int clientId) throws IOException {
-        if(gameEngine.checkMove(clientId)){
+    private void checkWord(String enteredWord, int clientId) throws IOException {
+        if (gameEngine.checkMove(clientId)) {
             if (gameEngine.doesItExist(enteredWord)) {
                 if (!(gameEngine.getWordList().contains(enteredWord))) {
                     gameEngine.addWord(enteredWord);

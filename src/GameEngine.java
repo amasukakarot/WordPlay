@@ -28,11 +28,11 @@ public class GameEngine {
         return wordList;
     }
 
-    public boolean checkMove(int clientId){
-        if (clientId == 1 && clientMove == 1){
+    public boolean checkMove(int clientId) {
+        if (clientId == 1 && clientMove == 1) {
             clientMove = 2;
             return true;
-        } else if (clientId == 2 && clientMove == 2){
+        } else if (clientId == 2 && clientMove == 2) {
             clientMove = 1;
             return true;
         } else {

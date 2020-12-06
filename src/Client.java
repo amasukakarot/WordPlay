@@ -6,7 +6,7 @@ import java.net.Socket;
 
 public class Client {
     public static void main(String[] args) throws IOException {
-        Socket listen = new Socket("127.0.0.1",9095);
+        Socket listen = new Socket("127.0.0.1", 9095);
         System.out.println("Connected to server on port 9095");
 
         PrintWriter out = new PrintWriter(listen.getOutputStream(), true);
@@ -16,7 +16,7 @@ public class Client {
 
         new Thread(serverConnection).start();
 
-        while (true){
+        while (true) {
             String clientCommand = keyboard.readLine();
             out.println(clientCommand);
 
