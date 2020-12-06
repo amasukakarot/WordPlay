@@ -7,12 +7,17 @@ import java.util.stream.Collectors;
 
 public class GameEngine {
 
-    static List<String> wordList = new ArrayList<>();
+    private static List<String> wordList = new ArrayList<>();
     private Set<String> wordsSet;
     private String[] words;
+    private static int clientMove;
 
     public GameEngine() {
+        clientMove = 1;
+    }
 
+    public int getClientMove() {
+        return clientMove;
     }
 
     public void addWord(String word) {
@@ -21,6 +26,19 @@ public class GameEngine {
 
     public List<String> getWordList() {
         return wordList;
+    }
+
+    public boolean checkMove(int clientId){
+        if (clientId == 1 && clientMove == 1){
+            clientMove = 2;
+            return true;
+        } else if (clientId == 2 && clientMove == 2){
+            clientMove = 1;
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
 
@@ -37,6 +55,4 @@ public class GameEngine {
         Collections.addAll(wordsSet, words);
         wordsSet = wordsSet.stream().map(p -> p.toLowerCase()).collect(Collectors.toSet());
     }
-
-
 }

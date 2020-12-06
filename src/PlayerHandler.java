@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 
 public class PlayerHandler implements Runnable {
 
@@ -17,8 +18,7 @@ public class PlayerHandler implements Runnable {
         this.socket = socket;
         this.gameEngine = gameEngine;
         this.playerList = playerList;
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        out = new PrintWriter(socket.getOutputStream(), true);
+
     }
 
     private int getClientId(){
@@ -27,25 +27,26 @@ public class PlayerHandler implements Runnable {
 
     private void setup() throws IOException {
         gameEngine.getWordsFromFile();
+
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        out = new PrintWriter(socket.getOutputStream(), true);
+
+        out.println("Hello client " + clientId + ".The game has started. Please enter your first word. ");
+        outToAll("Number of clients connected:" + playerList.size());
+
     }
 
     @Override
     public void run() {
         try {
             setup();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //welcome message for client
-        out.println("Hello client " + clientId + ".The game has started. Please enter your first word. ");
-        outToAll("Number of clients connected:" + playerList.size());
-        try {
+            out.println("Client " + gameEngine.getClientMove() + " turn first.");
             while (true) {
                 String clientCommand = in.readLine();
                 System.out.println("Client " + clientId + " command:" + clientCommand);
                 if (clientCommand.startsWith("move")) {
                     String enteredWord = clientCommand.substring(5);
-                    checkWord(enteredWord);
+                    checkWord(enteredWord,clientId);
 
                 } else if (clientCommand.equalsIgnoreCase("words")) {
                     out.println(gameEngine.getWordList());
@@ -72,18 +73,21 @@ public class PlayerHandler implements Runnable {
         }
     }
 
-    private void checkWord(String enteredWord) throws IOException {
-        if (gameEngine.doesItExist(enteredWord)) {
-            if (!(gameEngine.getWordList().contains(enteredWord))) {
-                gameEngine.addWord(enteredWord);
-                outToAll("Client " + clientId + " entered the word:" + enteredWord);
+    private void checkWord(String enteredWord,int clientId) throws IOException {
+        if(gameEngine.checkMove(clientId)){
+            if (gameEngine.doesItExist(enteredWord)) {
+                if (!(gameEngine.getWordList().contains(enteredWord))) {
+                    gameEngine.addWord(enteredWord);
+                    outToAll("Client " + clientId + " entered the word:" + enteredWord);
+                } else {
+                    outToAll("Client " + clientId + " entered a word which has already been entered. They lose!");
+                }
             } else {
-                outToAll("Client " + clientId + " entered a word which has already been entered. They lose!");
+                outToAll("Client " + clientId + " entered a word which does not exist. They lose!");
+                //tell client 2 that they won, disconnect client one.
             }
         } else {
-            outToAll("Client " + clientId + " entered a word which does not exist. They lose!");
-            //tell client 2 that they won, disconnect client one.
+            out.println("It's not your move.");
         }
     }
-
 }
