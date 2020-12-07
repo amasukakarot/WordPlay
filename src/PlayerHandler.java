@@ -48,7 +48,7 @@ public class PlayerHandler implements Runnable {
                 System.out.println("Client " + clientId + " command:" + clientCommand);
                 if (clientCommand.startsWith("move")) {
                     String enteredWord = clientCommand.substring(5);
-                    checkWord(enteredWord, clientId);
+                    move(enteredWord, clientId);
 
                 } else if (clientCommand.equalsIgnoreCase("words")) {
                     out.println(gameEngine.getWordList());
@@ -67,29 +67,48 @@ public class PlayerHandler implements Runnable {
         }
     }
 
-    private void outToClient(String s, int clientId) {
-        for (PlayerHandler client : playerList) {
-            if (client.getClientId() == clientId) {
-                client.out.println(s);
-            }
-        }
-    }
-
-    private void checkWord(String enteredWord, int clientId) throws IOException {
+    //    String lastWordEntered = wordList.get(wordList.size());
+//    String lastCharacterOfLastWord = lastWordEntered.substring((lastWordEntered.length() - 1));
+//
+//                if (enteredWord.startsWith(lastCharacterOfLastWord))
+//
+//    {
+//        wordList.add(enteredWord);
+//        outToAll("Client " + clientId + " entered the word:" + enteredWord);
+//    }
+//
+    private void move(String enteredWord, int clientId) throws IOException {
         if (gameEngine.checkMove(clientId)) {
-            if (gameEngine.doesItExist(enteredWord)) {
-                if (!(gameEngine.getWordList().contains(enteredWord))) {
+            String lastWordEntered = null;
+            String lastCharacterOfLastWord = null;
+            if (!gameEngine.getWordList().isEmpty()) {
+                lastWordEntered = gameEngine.getWordList().get(gameEngine.getWordList().size() -1);
+                lastCharacterOfLastWord = lastWordEntered.substring((lastWordEntered.length() - 1));
+                System.out.println(gameEngine.getWordList().size());
+                if (enteredWord.startsWith(lastCharacterOfLastWord)) {
+                    if (gameEngine.doesItExist(enteredWord)) {
+                        if (!(gameEngine.getWordList().contains(enteredWord))) {
+                            gameEngine.addWord(enteredWord);
+                            outToAll("Client " + clientId + " entered the word:" + enteredWord);
+                        } else {
+                            outToAll("Client " + clientId + " entered a word which has already been entered. They lose!");
+                        }
+                    } else {
+                        outToAll("Client " + clientId + " entered a word which does not exist. They lose!");
+                    }
+                } else {
+                    out.println("You entered a word which does not being with the last character of the previously entered word!");
+                }
+            } else {
+                if (gameEngine.doesItExist(enteredWord)){
                     gameEngine.addWord(enteredWord);
                     outToAll("Client " + clientId + " entered the word:" + enteredWord);
                 } else {
-                    outToAll("Client " + clientId + " entered a word which has already been entered. They lose!");
+                    outToAll("Client " + clientId + " entered a word which does not exist. They lose!");
                 }
-            } else {
-                outToAll("Client " + clientId + " entered a word which does not exist. They lose!");
-                //tell client 2 that they won, disconnect client one.
             }
         } else {
-            out.println("It's not your move.");
+            out.println("It's not your move!");
         }
     }
 }

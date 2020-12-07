@@ -19,7 +19,6 @@ public class Client {
         while (true) {
             String clientCommand = keyboard.readLine();
             out.println(clientCommand);
-
         }
     }
 
