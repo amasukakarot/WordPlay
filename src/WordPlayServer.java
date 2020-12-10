@@ -13,13 +13,13 @@ public class WordPlayServer {
 
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(9095);
-        System.out.println("[SERVER] SERVER STARTED ON PORT 9095. WAITING FOR CLIENT...");
+        System.out.println("[SERVER] SERVER STARTED ON PORT 9095. WAITING FOR A PLAYER...");
 
         while (true) {
             Socket clientSocket = serverSocket.accept();
             GameEngine gameEngine = new GameEngine();
             PlayerHandler playerThread = new PlayerHandler(++clientId, clientSocket, gameEngine, playerList);
-            System.out.println("[SERVER] Client " + clientId + " connected");
+            System.out.println("[SERVER] Player " + clientId + " connected");
 
             playerList.add(playerThread);
             pool.execute(playerThread);

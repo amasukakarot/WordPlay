@@ -12,8 +12,9 @@ public class GameEngine {
     private String[] words;
     private static int clientMove;
 
-    public GameEngine() {
+    public GameEngine() throws IOException {
         clientMove = 1;
+        getWordsFromFile();
     }
 
     public int getClientMove() {
@@ -38,7 +39,6 @@ public class GameEngine {
         } else {
             return false;
         }
-
     }
 
 
