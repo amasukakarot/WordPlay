@@ -5,8 +5,8 @@ import java.net.Socket;
 
 public class ServerConnection implements Runnable {
 
-    Socket listen;
-    BufferedReader in;
+    private Socket listen;
+    private BufferedReader in;
 
     public ServerConnection(Socket listen) throws IOException {
         this.listen = listen;

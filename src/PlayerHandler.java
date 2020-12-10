@@ -7,11 +7,11 @@ import java.util.ArrayList;
 
 public class PlayerHandler implements Runnable {
 
-    Socket socket;
-    int clientId;
-    BufferedReader in;
-    PrintWriter out;
-    GameEngine gameEngine;
+    private Socket socket;
+    private int clientId;
+    private BufferedReader in;
+    private PrintWriter out;
+    private GameEngine gameEngine;
     private ArrayList<PlayerHandler> playerList = new ArrayList<>();
 
 
@@ -33,8 +33,8 @@ public class PlayerHandler implements Runnable {
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
 
-        out.println("Hello player " + clientId + ".The game has started. Please enter your first word. ");
-        outToAll("Number of players connected:" + playerList.size());
+        outToAll("Number of players connected: " + playerList.size());
+        out.println("Hello player " + clientId + ", the game has now started.");
 
     }
 
@@ -111,7 +111,7 @@ public class PlayerHandler implements Runnable {
         if (gameEngine.doesItExist(enteredWord)) {
             if (!(gameEngine.getWordList().contains(enteredWord))) {
                 gameEngine.addWord(enteredWord);
-                outToAll("Player " + clientId + " entered the word:" + enteredWord);
+                outToAll("Player " + clientId + " entered the word '" + enteredWord+ "'");
             } else {
                 //player should lose at this point
                 outToAll("Player " + clientId + " entered the word '" + enteredWord +  "'which has already been entered. They lose!");

@@ -7,9 +7,9 @@ import java.util.concurrent.Executors;
 
 public class WordPlayServer {
 
-    static ArrayList<PlayerHandler> playerList = new ArrayList<>();
-    static int clientId = 0;
-    static ExecutorService pool = Executors.newFixedThreadPool(2);
+    private static ArrayList<PlayerHandler> playerList = new ArrayList<>();
+    private static int clientId = 0;
+    private static ExecutorService pool = Executors.newFixedThreadPool(2);
 
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(9095);
